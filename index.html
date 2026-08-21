@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Director — сборка сцен</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #10131c;
+    --bg-elevated: #171b28;
+    --bg-card: #1a1f2e;
+    --border: #2b3245;
+    --text: #e6e9f2;
+    --text-dim: #838ba3;
+    --accent: #4f8fef;
+    --accent-dim: #2c4a78;
+    --danger: #e4573d;
+    --ok: #5cb37e;
+    --radius: 3px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    min-height: 100vh;
+  }
+
+  .mono {
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+
+  header .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent-dim);
+    padding: 3px 8px;
+    border-radius: var(--radius);
+  }
+
+  /* --- Филмстрип: визуальная сумма длительностей сцен --- */
+
+  .filmstrip-section {
+    margin: 28px 0 36px;
+  }
+
+  .model-tabs {
+    display: flex;
+    gap: 8px;
+    margin: 24px 0 28px;
+  }
+
+  .model-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+  }
+
+  .model-tab:hover { color: var(--text); }
+
+  .model-tab.active {
+    border-color: var(--accent-dim);
+    color: var(--accent);
+    background: rgba(232, 163, 61, 0.08);
+  }
+
+  .filmstrip-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  .filmstrip-label .count.over {
+    color: var(--danger);
+  }
+
+  .filmstrip {
+    position: relative;
+    height: 46px;
+    background: #0a0a0a;
+    border-radius: var(--radius);
+    display: flex;
+    overflow: hidden;
+    background-image:
+      radial-gradient(circle, #000 2px, transparent 2.5px),
+      radial-gradient(circle, #000 2px, transparent 2.5px);
+    background-size: 16px 8px;
+    background-position: 0 0, 0 38px;
+    background-repeat: repeat-x;
+    padding: 8px 0;
+  }
+
+  .filmstrip .segment {
+    height: 100%;
+    border-right: 1px solid #0a0a0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: #0d1017;
+    font-weight: 600;
+    min-width: 4px;
+    transition: width 0.2s ease;
+  }
+
+  .filmstrip .empty-hint {
+    color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    padding-left: 12px;
+  }
+
+  /* --- Сцены --- */
+
+  .scenes { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+
+  .scene-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: 32px 1fr 96px 84px;
+    gap: 12px;
+    align-items: start;
+  }
+
+  .scene-index {
+    font-family: 'IBM Plex Mono', monospace;
+    color: var(--accent);
+    font-size: 13px;
+    padding-top: 9px;
+    text-align: center;
+  }
+
+  .scene-card textarea {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 8px 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5px;
+    resize: vertical;
+    min-height: 40px;
+    line-height: 1.4;
+  }
+
+  .scene-card textarea:focus, .scene-card input:focus {
+    outline: none;
+    border-color: var(--accent-dim);
+  }
+
+  .image-ref {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .image-ref-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+
+  .image-ref-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+  .image-ref-thumb {
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+  }
+
+  .duration-field { display: flex; flex-direction: column; gap: 4px; }
+
+  .duration-field label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .duration-field input {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 7px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .scene-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: stretch;
+  }
+
+  .icon-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    border-radius: var(--radius);
+    padding: 5px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .icon-btn:hover { border-color: var(--text-dim); color: var(--text); }
+  .icon-btn.remove:hover { border-color: var(--danger); color: var(--danger); }
+  .icon-btn:disabled { opacity: 0.3; cursor: default; }
+
+  .add-scene-btn {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--text-dim);
+    border-radius: var(--radius);
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    margin-bottom: 28px;
+  }
+
+  .add-scene-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+  /* --- Глобальный промпт и отправка --- */
+
+  .field-block { margin-bottom: 24px; }
+
+  .field-block label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .field-block textarea {
+    width: 100%;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 10px 12px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 13.5px;
+    min-height: 50px;
+  }
+
+  .submit-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 32px;
+  }
+
+  .submit-btn {
+    background: var(--accent);
+    color: #0d1017;
+    border: none;
+    border-radius: var(--radius);
+    padding: 13px 28px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .submit-btn:hover { background: #6ba3f5; }
+  .submit-btn:disabled { background: var(--border); color: var(--text-dim); cursor: default; }
+
+  .status-line {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text-dim);
+  }
+
+  .status-line .state-processing { color: var(--accent); }
+  .status-line .state-done { color: var(--ok); }
+  .status-line .state-error { color: var(--danger); }
+
+  .result-block {
+    margin-top: 28px;
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+
+  .result-block video {
+    width: 100%;
+    border-radius: var(--radius);
+    background: #000;
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <h1>Director</h1>
+    <span class="tag">local build</span>
+  </header>
+
+  <div class="model-tabs">
+    <button class="model-tab active" id="tabLtx">LTX 2.3 Director</button>
+    <button class="model-tab" id="tabMinimax">MiniMax H3</button>
+  </div>
+
+  <div id="ltxPanel">
+    <div class="filmstrip-section">
+      <div class="filmstrip-label">
+        <span>РАСКАДРОВКА</span>
+        <span class="mono count" id="durationCounter">0.0 / 60 сек</span>
+      </div>
+      <div class="filmstrip" id="filmstrip"></div>
+    </div>
+
+    <div class="scenes" id="scenes"></div>
+
+    <button class="add-scene-btn" id="addSceneBtn">+ ДОБАВИТЬ СЦЕНУ</button>
+
+    <div class="field-block">
+      <label>Разрешение (необязательно — по умолчанию модель решает сама)</label>
+      <div style="display:flex; gap:10px;">
+        <select id="ltxAspectRatio" style="flex:1; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); padding:9px 10px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;">
+          <option value="">Авто (проверенный дефолт)</option>
+          <option value="16:9">16:9 — альбомная</option>
+          <option value="9:16">9:16 — портрет</option>
+          <option value="1:1">1:1 — квадрат</option>
+          <option value="4:3">4:3</option>
+          <option value="3:4">3:4</option>
+          <option value="21:9">21:9 — широкоформатная</option>
+        </select>
+        <input type="number" id="ltxMegapixels" min="0.1" max="2.0" step="0.1" value="0.5" placeholder="МП"
+          style="width:90px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); padding:9px 10px; font-family:'IBM Plex Mono',monospace;">
+      </div>
+    </div>
+
+    <div class="field-block">
+      <label>Общий стиль (применяется ко всему ролику)</label>
+      <textarea id="globalPrompt" placeholder="например: кинематографичный неоновый нуар, дождь, реалистичное освещение"></textarea>
+    </div>
+
+    <div class="submit-row">
+      <button class="submit-btn" id="submitBtn">Сгенерировать</button>
+      <span class="status-line" id="statusLine"></span>
+    </div>
+
+    <div class="result-block" id="resultBlock" style="display:none;">
+      <video id="resultVideo" controls></video>
+    </div>
+  </div>
+
+  <div id="minimaxPanel" style="display:none;">
+    <div class="field-block">
+      <label>Промпт (один блок на весь ролик — сцена, движение камеры, звук)</label>
+      <textarea id="mmPrompt" style="min-height:110px;" placeholder="например: детектив в плаще стоит на крыше ночного города под дождём, неоновые вывески отражаются в лужах, кинематографично. Звук: далёкие сирены, шум дождя"></textarea>
+    </div>
+
+    <div class="field-block" style="max-width:220px;">
+      <label>Длительность, сек (1–15)</label>
+      <input type="number" id="mmDuration" min="1" max="15" step="0.5" value="8"
+        style="width:100%; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); padding:9px 10px; font-family:'IBM Plex Mono',monospace;">
+    </div>
+
+    <div class="field-block">
+      <label>Разрешение</label>
+      <div style="display:flex; gap:10px;">
+        <select id="mmAspectRatio" style="flex:1; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); padding:9px 10px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;">
+          <option value="16:9 (Widescreen)" selected>16:9 — альбомная</option>
+          <option value="9:16 (Portrait Widescreen)">9:16 — портрет</option>
+          <option value="1:1 (Square)">1:1 — квадрат</option>
+          <option value="4:3 (Standard)">4:3</option>
+          <option value="3:4 (Portrait Standard)">3:4</option>
+          <option value="3:2 (Photo)">3:2</option>
+          <option value="2:3 (Portrait Photo)">2:3</option>
+          <option value="21:9 (Ultrawide)">21:9 — широкоформатная</option>
+        </select>
+        <input type="number" id="mmMegapixels" min="0.1" max="1.05" step="0.05" value="0.4" placeholder="МП"
+          style="width:90px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); color:var(--text); padding:9px 10px; font-family:'IBM Plex Mono',monospace;">
+      </div>
+      <p style="font-size:11px; color:var(--text-dim); margin-top:6px;">Локальный релиз H3-Base ограничен ~768p (до ~1.05 МП) — выше официально не поддерживается.</p>
+    </div>
+
+    <div class="submit-row">
+      <button class="submit-btn" id="mmSubmitBtn">Сгенерировать</button>
+      <span class="status-line" id="mmStatusLine"></span>
+    </div>
+
+    <div class="result-block" id="mmResultBlock" style="display:none;">
+      <video id="mmResultVideo" controls></video>
+    </div>
+  </div>
+</div>
+
+<script>
+// Пусто = запросы идут на тот же адрес, с которого открыта страница.
+// Это работает, потому что теперь FastAPI сам отдаёт index.html (см. app.py).
+const API_BASE = "";
+
+// ВНИМАНИЕ: это не настоящая защита — ключ виден любому, кто откроет исходный код
+// страницы (Ctrl+U в браузере). Она лишь отсекает случайных ботов/сканеры интернета,
+// а не защищает от человека, который целенаправленно хочет получить доступ.
+// Для реальной защиты (пускать только знакомых) — см. вариант с Cloudflare Access
+// в объяснении к развёртыванию.
+const API_KEY = "ВСТАВЬТЕ_СЮДА_ТОТ_ЖЕ_КЛЮЧ_ЧТО_НА_СЕРВЕРЕ";
+const MAX_DURATION = 60;
+const MAX_SCENES = 12;
+const ANCHOR_IMAGE_DURATION_SEC = 1; // должно совпадать с ANCHOR_IMAGE_DURATION_SEC в ltx_service.py
+
+let scenes = [
+  { prompt: "", duration: 3, imageFilename: null, imagePreviewUrl: null }
+];
+
+const scenesEl = document.getElementById("scenes");
+const filmstripEl = document.getElementById("filmstrip");
+const durationCounterEl = document.getElementById("durationCounter");
+const submitBtn = document.getElementById("submitBtn");
+const statusLine = document.getElementById("statusLine");
+const resultBlock = document.getElementById("resultBlock");
+const resultVideo = document.getElementById("resultVideo");
+
+const segmentPalette = ["#4f8fef", "#4478d1", "#3a63b3", "#5aa0e0", "#3d5a94", "#6ba3f5"];
+
+function totalDuration() {
+  const scenesSum = scenes.reduce((sum, s) => sum + (parseFloat(s.duration) || 0), 0);
+  const anchorsSum = scenes.filter(s => s.imageFilename).length * ANCHOR_IMAGE_DURATION_SEC;
+  return scenesSum + anchorsSum;
+}
+
+function render() {
+  // --- филмстрип ---
+  const total = totalDuration();
+  filmstripEl.innerHTML = "";
+  if (total === 0) {
+    filmstripEl.innerHTML = '<div class="empty-hint">добавьте сцену, чтобы увидеть раскадровку</div>';
+  } else {
+    scenes.forEach((s, i) => {
+      const d = parseFloat(s.duration) || 0;
+      if (d <= 0) return;
+      const seg = document.createElement("div");
+      seg.className = "segment";
+      seg.style.width = (d / total * 100) + "%";
+      seg.style.background = segmentPalette[i % segmentPalette.length];
+      seg.textContent = d + "с";
+      filmstripEl.appendChild(seg);
+    });
+  }
+
+  const counter = document.getElementById("durationCounter");
+  counter.textContent = `${total.toFixed(1)} / ${MAX_DURATION} сек`;
+  counter.classList.toggle("over", total > MAX_DURATION);
+
+  // --- карточки сцен ---
+  scenesEl.innerHTML = "";
+  scenes.forEach((scene, i) => {
+    const card = document.createElement("div");
+    card.className = "scene-card";
+    card.innerHTML = `
+      <div class="scene-index mono">${i + 1}</div>
+      <div>
+        <textarea placeholder="Опишите, что происходит в сцене...">${scene.prompt}</textarea>
+        <div class="image-ref">
+          <label class="image-ref-btn">
+            ${scene.imageFilename ? "✓ референс прикреплён" : "+ прикрепить референс-кадр"}
+            <input type="file" accept="image/*" hidden>
+          </label>
+          ${scene.imagePreviewUrl ? `<img class="image-ref-thumb" src="${scene.imagePreviewUrl}">` : ""}
+          ${scene.imageFilename ? `<button class="icon-btn remove-image" type="button">убрать</button>` : ""}
+        </div>
+      </div>
+      <div class="duration-field">
+        <label>Секунды</label>
+        <input type="number" min="1" step="0.5" value="${scene.duration}">
+      </div>
+      <div class="scene-actions">
+        <button class="icon-btn move-up" ${i === 0 ? "disabled" : ""}>▲ вверх</button>
+        <button class="icon-btn move-down" ${i === scenes.length - 1 ? "disabled" : ""}>▼ вниз</button>
+        <button class="icon-btn remove" ${scenes.length === 1 ? "disabled" : ""}>✕ убрать</button>
+      </div>
+    `;
+
+    card.querySelector("textarea").addEventListener("input", (e) => {
+      scenes[i].prompt = e.target.value;
+    });
+    card.querySelector('input[type="number"]').addEventListener("input", (e) => {
+      scenes[i].duration = e.target.value;
+      render();
+    });
+    card.querySelector(".move-up").addEventListener("click", () => {
+      [scenes[i - 1], scenes[i]] = [scenes[i], scenes[i - 1]];
+      render();
+    });
+    card.querySelector(".move-down").addEventListener("click", () => {
+      [scenes[i + 1], scenes[i]] = [scenes[i], scenes[i + 1]];
+      render();
+    });
+    card.querySelector(".remove").addEventListener("click", () => {
+      scenes.splice(i, 1);
+      render();
+    });
+
+    const fileInput = card.querySelector('input[type="file"]');
+    fileInput.addEventListener("change", async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      // Показываем превью сразу, не дожидаясь ответа сервера — для UX,
+      // сама загрузка на ComfyUI идёт в фоне.
+      scenes[i].imagePreviewUrl = URL.createObjectURL(file);
+      render();
+
+      try {
+        const formData = new FormData();
+        formData.append("file", file);
+        const resp = await fetch(`${API_BASE}/upload-image`, {
+          method: "POST",
+          headers: { "X-API-Key": API_KEY },
+          body: formData
+        });
+        if (!resp.ok) throw new Error("сервер отклонил файл");
+        const data = await resp.json();
+        scenes[i].imageFilename = data.filename;
+        render();
+      } catch (err) {
+        setStatus("Не удалось загрузить картинку: " + err.message, "error");
+        scenes[i].imagePreviewUrl = null;
+        render();
+      }
+    });
+
+    const removeImageBtn = card.querySelector(".remove-image");
+    if (removeImageBtn) {
+      removeImageBtn.addEventListener("click", () => {
+        scenes[i].imageFilename = null;
+        scenes[i].imagePreviewUrl = null;
+        render();
+      });
+    }
+
+    scenesEl.appendChild(card);
+  });
+
+  document.getElementById("addSceneBtn").disabled = scenes.length >= MAX_SCENES;
+}
+
+document.getElementById("addSceneBtn").addEventListener("click", () => {
+  if (scenes.length >= MAX_SCENES) return;
+  scenes.push({ prompt: "", duration: 3, imageFilename: null, imagePreviewUrl: null });
+  render();
+});
+
+function setStatus(text, state) {
+  statusLine.textContent = text;
+  statusLine.className = "status-line mono" + (state ? " state-" + state : "");
+}
+
+async function pollStatus(jobId) {
+  try {
+    const resp = await fetch(`${API_BASE}/status/${jobId}`);
+    if (!resp.ok) throw new Error("Сервер вернул ошибку статуса");
+    const data = await resp.json();
+
+    if (data.status === "queued" || data.status === "processing") {
+      setStatus("Рендерится на ComfyUI...", "processing");
+      setTimeout(() => pollStatus(jobId), 3000);
+    } else if (data.status === "done") {
+      setStatus("Готово", "done");
+      resultVideo.src = data.video_url;
+      resultBlock.style.display = "block";
+      submitBtn.disabled = false;
+    } else if (data.status === "error") {
+      setStatus("Ошибка: " + data.error, "error");
+      submitBtn.disabled = false;
+    }
+  } catch (err) {
+    setStatus("Не удалось получить статус: " + err.message, "error");
+    submitBtn.disabled = false;
+  }
+}
+
+submitBtn.addEventListener("click", async () => {
+  const total = totalDuration();
+  if (total === 0) {
+    setStatus("Добавьте хотя бы одну сцену с длительностью", "error");
+    return;
+  }
+  if (total > MAX_DURATION) {
+    setStatus(`Суммарная длительность превышает лимит в ${MAX_DURATION} сек`, "error");
+    return;
+  }
+  if (scenes.some(s => !s.prompt.trim())) {
+    setStatus("У каждой сцены должен быть текст промпта", "error");
+    return;
+  }
+
+  submitBtn.disabled = true;
+  resultBlock.style.display = "none";
+  setStatus("Отправляю задачу...", "processing");
+
+  const ltxAspectRatioValue = document.getElementById("ltxAspectRatio").value;
+  const payload = {
+    global_prompt: document.getElementById("globalPrompt").value,
+    scenes: scenes.map(s => ({
+      type: "text",
+      prompt: s.prompt,
+      duration_sec: parseFloat(s.duration),
+      image_filename: s.imageFilename || null
+    })),
+    aspect_ratio: ltxAspectRatioValue || null,
+    megapixels: ltxAspectRatioValue ? parseFloat(document.getElementById("ltxMegapixels").value) : null
+  };
+
+  try {
+    const resp = await fetch(`${API_BASE}/generate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || "Сервер отклонил запрос");
+    }
+    const data = await resp.json();
+    pollStatus(data.job_id);
+  } catch (err) {
+    setStatus("Не удалось отправить: " + err.message, "error");
+    submitBtn.disabled = false;
+  }
+});
+
+// --- Переключение между моделями ---
+
+const tabLtx = document.getElementById("tabLtx");
+const tabMinimax = document.getElementById("tabMinimax");
+const ltxPanel = document.getElementById("ltxPanel");
+const minimaxPanel = document.getElementById("minimaxPanel");
+
+tabLtx.addEventListener("click", () => {
+  tabLtx.classList.add("active");
+  tabMinimax.classList.remove("active");
+  ltxPanel.style.display = "";
+  minimaxPanel.style.display = "none";
+});
+
+tabMinimax.addEventListener("click", () => {
+  tabMinimax.classList.add("active");
+  tabLtx.classList.remove("active");
+  minimaxPanel.style.display = "";
+  ltxPanel.style.display = "none";
+});
+
+// --- MiniMax H3: простая форма, один промпт + длительность ---
+
+const mmSubmitBtn = document.getElementById("mmSubmitBtn");
+const mmStatusLine = document.getElementById("mmStatusLine");
+const mmResultBlock = document.getElementById("mmResultBlock");
+const mmResultVideo = document.getElementById("mmResultVideo");
+
+function setMmStatus(text, state) {
+  mmStatusLine.textContent = text;
+  mmStatusLine.className = "status-line mono" + (state ? " state-" + state : "");
+}
+
+async function pollMmStatus(jobId) {
+  try {
+    const resp = await fetch(`${API_BASE}/status/${jobId}`);
+    if (!resp.ok) throw new Error("Сервер вернул ошибку статуса");
+    const data = await resp.json();
+
+    if (data.status === "queued" || data.status === "processing") {
+      setMmStatus("Рендерится на ComfyUI...", "processing");
+      setTimeout(() => pollMmStatus(jobId), 3000);
+    } else if (data.status === "done") {
+      setMmStatus("Готово", "done");
+      mmResultVideo.src = data.video_url;
+      mmResultBlock.style.display = "block";
+      mmSubmitBtn.disabled = false;
+    } else if (data.status === "error") {
+      setMmStatus("Ошибка: " + data.error, "error");
+      mmSubmitBtn.disabled = false;
+    }
+  } catch (err) {
+    setMmStatus("Не удалось получить статус: " + err.message, "error");
+    mmSubmitBtn.disabled = false;
+  }
+}
+
+mmSubmitBtn.addEventListener("click", async () => {
+  const prompt = document.getElementById("mmPrompt").value.trim();
+  const duration = parseFloat(document.getElementById("mmDuration").value);
+  const aspectRatio = document.getElementById("mmAspectRatio").value;
+  const megapixels = parseFloat(document.getElementById("mmMegapixels").value);
+
+  if (!prompt) {
+    setMmStatus("Введите промпт", "error");
+    return;
+  }
+  if (duration < 1 || duration > 15) {
+    setMmStatus("Длительность должна быть от 1 до 15 сек", "error");
+    return;
+  }
+
+  mmSubmitBtn.disabled = true;
+  mmResultBlock.style.display = "none";
+  setMmStatus("Отправляю задачу...", "processing");
+
+  try {
+    const resp = await fetch(`${API_BASE}/generate-minimax`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-API-Key": API_KEY
+      },
+      body: JSON.stringify({ prompt, duration_sec: duration, aspect_ratio: aspectRatio, megapixels })
+    });
+    if (!resp.ok) {
+      const err = await resp.json();
+      throw new Error(err.detail || "Сервер отклонил запрос");
+    }
+    const data = await resp.json();
+    pollMmStatus(data.job_id);
+  } catch (err) {
+    setMmStatus("Не удалось отправить: " + err.message, "error");
+    mmSubmitBtn.disabled = false;
+  }
+});
+
+render();
+</script>
+
+</body>
+</html>

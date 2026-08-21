@@ -1,0 +1,1245 @@
+{
+  "136": {
+    "inputs": {
+      "width": [
+        "606",
+        0
+      ],
+      "height": [
+        "607",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "keep_proportion": "pad",
+      "pad_color": "0, 0, 0",
+      "crop_position": "center",
+      "divisible_by": 2,
+      "device": "cpu",
+      "image": [
+        "294",
+        0
+      ]
+    },
+    "class_type": "ImageResizeKJv2",
+    "_meta": {
+      "title": "Resize Image v2"
+    }
+  },
+  "294": {
+    "inputs": {
+      "image": "Flux_00678_.png"
+    },
+    "class_type": "LoadImage",
+    "_meta": {
+      "title": "Load Image"
+    }
+  },
+  "295": {
+    "inputs": {
+      "pixels": [
+        "136",
+        0
+      ],
+      "vae": [
+        "673",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  },
+  "532": {
+    "inputs": {
+      "frame_rate": [
+        "630",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": false,
+      "images": [
+        "336:328",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "584": {
+    "inputs": {
+      "frame_rate": [
+        "630",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": false,
+      "images": [
+        "623:600",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "606": {
+    "inputs": {
+      "value": 832
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Width"
+    }
+  },
+  "607": {
+    "inputs": {
+      "value": 480
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "Height"
+    }
+  },
+  "608": {
+    "inputs": {
+      "value": 81
+    },
+    "class_type": "PrimitiveInt",
+    "_meta": {
+      "title": "num_frames"
+    }
+  },
+  "609": {
+    "inputs": {
+      "value": 6
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "Steps"
+    }
+  },
+  "610": {
+    "inputs": {
+      "value": 3
+    },
+    "class_type": "INTConstant",
+    "_meta": {
+      "title": "Split_step"
+    }
+  },
+  "630": {
+    "inputs": {
+      "value": 16
+    },
+    "class_type": "PrimitiveFloat",
+    "_meta": {
+      "title": "FPS"
+    }
+  },
+  "634": {
+    "inputs": {
+      "frame_rate": [
+        "630",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": false,
+      "images": [
+        "644:684",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "645": {
+    "inputs": {
+      "frame_rate": [
+        "630",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "AnimateDiff",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": false,
+      "images": [
+        "655:695",
+        0
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "656": {
+    "inputs": {
+      "frame_rate": [
+        "630",
+        0
+      ],
+      "loop_count": 0,
+      "filename_prefix": "SVI_PRO/test",
+      "format": "video/h264-mp4",
+      "pix_fmt": "yuv420p",
+      "crf": 19,
+      "save_metadata": true,
+      "trim_to_audio": false,
+      "pingpong": false,
+      "save_output": true,
+      "images": [
+        "655:694",
+        2
+      ]
+    },
+    "class_type": "VHS_VideoCombine",
+    "_meta": {
+      "title": "Video Combine 🎥🅥🅗🅢"
+    }
+  },
+  "662": {
+    "inputs": {
+      "unet_name": "wan2.2_i2v_high_noise_14B_Q3_K_M.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  },
+  "663": {
+    "inputs": {
+      "unet_name": "wan2.2_i2v_low_noise_14B_Q3_K_M.gguf"
+    },
+    "class_type": "UnetLoaderGGUF",
+    "_meta": {
+      "title": "Unet Loader (GGUF)"
+    }
+  },
+  "664": {
+    "inputs": {
+      "sage_attention": "auto",
+      "allow_compile": false,
+      "model": [
+        "662",
+        0
+      ]
+    },
+    "class_type": "PathchSageAttentionKJ",
+    "_meta": {
+      "title": "Patch Sage Attention KJ"
+    }
+  },
+  "665": {
+    "inputs": {
+      "sage_attention": "auto",
+      "allow_compile": false,
+      "model": [
+        "663",
+        0
+      ]
+    },
+    "class_type": "PathchSageAttentionKJ",
+    "_meta": {
+      "title": "Patch Sage Attention KJ"
+    }
+  },
+  "666": {
+    "inputs": {
+      "enable_fp16_accumulation": true,
+      "model": [
+        "664",
+        0
+      ]
+    },
+    "class_type": "ModelPatchTorchSettings",
+    "_meta": {
+      "title": "Model Patch Torch Settings"
+    }
+  },
+  "667": {
+    "inputs": {
+      "enable_fp16_accumulation": true,
+      "model": [
+        "665",
+        0
+      ]
+    },
+    "class_type": "ModelPatchTorchSettings",
+    "_meta": {
+      "title": "Model Patch Torch Settings"
+    }
+  },
+  "668": {
+    "inputs": {
+      "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank32_bf16.safetensors",
+      "strength_model": 3,
+      "model": [
+        "666",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "HIGH LORA 1"
+    }
+  },
+  "669": {
+    "inputs": {
+      "lora_name": "lightx2v_I2V_14B_480p_cfg_step_distill_rank32_bf16.safetensors",
+      "strength_model": 1.5,
+      "model": [
+        "667",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LOW LORA 1"
+    }
+  },
+  "670": {
+    "inputs": {
+      "lora_name": "SVI_v2_PRO_Wan2.2-I2V-A14B_HIGH_lora_rank_128_fp16.safetensors",
+      "strength_model": 1.0000000000000002,
+      "model": [
+        "668",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "HIGH LORA 2"
+    }
+  },
+  "671": {
+    "inputs": {
+      "lora_name": "SVI_v2_PRO_Wan2.2-I2V-A14B_LOW_lora_rank_128_fp16.safetensors",
+      "strength_model": 1.0000000000000002,
+      "model": [
+        "669",
+        0
+      ]
+    },
+    "class_type": "LoraLoaderModelOnly",
+    "_meta": {
+      "title": "LOW LORA 2"
+    }
+  },
+  "672": {
+    "inputs": {
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "type": "wan",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Load CLIP"
+    }
+  },
+  "673": {
+    "inputs": {
+      "vae_name": "wan_2.1_vae.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "Load VAE"
+    }
+  },
+  "623:596": {
+    "inputs": {
+      "text": "The warrior cat takes the sword in both hands and raises it high above his head with a sharp movement. There's admiration on his face. He looks up at the blade of the sword. His cloak flutters in the wind.",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "623:598": {
+    "inputs": {
+      "text": "Bright, oversaturated tones; overexposed; static; unclear or blurry details; subtitles; style or artistic work; painting or image; still/frozen frame; overall grayish appearance; worst quality; low quality; JPEG artifacts; ugly; incomplete or damaged; extra fingers; poorly drawn hands; poorly drawn face; deformed; disfigured; malformed limbs; fused fingers; motionless/still image; messy/cluttered background; three legs; many people in the background; walking backwards.",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "623:299": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "KSamplerSelect"
+    }
+  },
+  "623:297": {
+    "inputs": {
+      "shift": 8,
+      "model": [
+        "670",
+        0
+      ]
+    },
+    "class_type": "ModelSamplingSD3",
+    "_meta": {
+      "title": "ModelSamplingSD3"
+    }
+  },
+  "623:298": {
+    "inputs": {
+      "scheduler": "simple",
+      "steps": [
+        "609",
+        0
+      ],
+      "denoise": 1,
+      "model": [
+        "623:297",
+        0
+      ]
+    },
+    "class_type": "BasicScheduler",
+    "_meta": {
+      "title": "BasicScheduler"
+    }
+  },
+  "623:595": {
+    "inputs": {
+      "length": [
+        "608",
+        0
+      ],
+      "motion_latent_count": 1,
+      "positive": [
+        "623:596",
+        0
+      ],
+      "negative": [
+        "623:598",
+        0
+      ],
+      "anchor_samples": [
+        "295",
+        0
+      ]
+    },
+    "class_type": "WanImageToVideoSVIPro",
+    "_meta": {
+      "title": "WanImageToVideoSVIPro"
+    }
+  },
+  "623:597": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "670",
+        0
+      ],
+      "positive": [
+        "623:595",
+        0
+      ],
+      "negative": [
+        "623:595",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "623:128": {
+    "inputs": {
+      "step": [
+        "610",
+        0
+      ],
+      "sigmas": [
+        "623:298",
+        0
+      ]
+    },
+    "class_type": "SplitSigmas",
+    "_meta": {
+      "title": "SplitSigmas"
+    }
+  },
+  "623:603": {
+    "inputs": {
+      "noise": [
+        "623:599",
+        0
+      ],
+      "guider": [
+        "623:597",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        0
+      ],
+      "latent_image": [
+        "623:595",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "623:601": {
+    "inputs": {},
+    "class_type": "DisableNoise",
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "623:602": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "671",
+        0
+      ],
+      "positive": [
+        "623:595",
+        0
+      ],
+      "negative": [
+        "623:595",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "623:604": {
+    "inputs": {
+      "noise": [
+        "623:601",
+        0
+      ],
+      "guider": [
+        "623:602",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        1
+      ],
+      "latent_image": [
+        "623:603",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "623:600": {
+    "inputs": {
+      "samples": [
+        "623:604",
+        0
+      ],
+      "vae": [
+        "673",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "623:599": {
+    "inputs": {
+      "noise_seed": 42
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "336:330": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "670",
+        0
+      ],
+      "positive": [
+        "336:333",
+        0
+      ],
+      "negative": [
+        "336:333",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "336:334": {
+    "inputs": {
+      "text": "The warrior cat holds a sword above his head. The sword begins to glow red. Small red sparks appear around the cat, which circle around it. They shimmer and shimmer, appearing and disappearing. The sparks are spinning very fast and dynamically, swirling into a vortex",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "336:335": {
+    "inputs": {
+      "text": "Bright, oversaturated tones; overexposed; static; unclear or blurry details; subtitles; style or artistic work; painting or image; still/frozen frame; overall grayish appearance; worst quality; low quality; JPEG artifacts; ugly; incomplete or damaged; extra fingers; poorly drawn hands; poorly drawn face; deformed; disfigured; malformed limbs; fused fingers; motionless/still image; messy/cluttered background; three legs; many people in the background; walking backwards. do not animate the background",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "336:332": {
+    "inputs": {
+      "noise_seed": 43
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "336:333": {
+    "inputs": {
+      "length": [
+        "608",
+        0
+      ],
+      "motion_latent_count": 1,
+      "positive": [
+        "336:334",
+        0
+      ],
+      "negative": [
+        "336:335",
+        0
+      ],
+      "anchor_samples": [
+        "295",
+        0
+      ],
+      "prev_samples": [
+        "623:604",
+        0
+      ]
+    },
+    "class_type": "WanImageToVideoSVIPro",
+    "_meta": {
+      "title": "WanImageToVideoSVIPro"
+    }
+  },
+  "336:326": {
+    "inputs": {
+      "noise": [
+        "336:332",
+        0
+      ],
+      "guider": [
+        "336:330",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        0
+      ],
+      "latent_image": [
+        "336:333",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "336:325": {
+    "inputs": {},
+    "class_type": "DisableNoise",
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "336:331": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "671",
+        0
+      ],
+      "positive": [
+        "336:333",
+        0
+      ],
+      "negative": [
+        "336:333",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "336:327": {
+    "inputs": {
+      "noise": [
+        "336:325",
+        0
+      ],
+      "guider": [
+        "336:331",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        1
+      ],
+      "latent_image": [
+        "336:326",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "336:329": {
+    "inputs": {
+      "overlap": 5,
+      "overlap_side": "source",
+      "overlap_mode": "linear_blend",
+      "source_images": [
+        "623:600",
+        0
+      ],
+      "new_images": [
+        "336:328",
+        0
+      ]
+    },
+    "class_type": "ImageBatchExtendWithOverlap",
+    "_meta": {
+      "title": "Image Batch Extend With Overlap"
+    }
+  },
+  "336:328": {
+    "inputs": {
+      "samples": [
+        "336:327",
+        0
+      ],
+      "vae": [
+        "673",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "644:674": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "670",
+        0
+      ],
+      "positive": [
+        "644:678",
+        0
+      ],
+      "negative": [
+        "644:678",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "644:675": {
+    "inputs": {
+      "text": "The warrior cat holds a sword above his head. The blade of the sword lights up with a red flame. A column of red flame bursts out of the sword and quickly rushes into the sky. The camera turns to show dark clouds and a fierce column of flame rushing into them.",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "644:676": {
+    "inputs": {
+      "text": "Bright, oversaturated tones; overexposed; static; unclear or blurry details; subtitles; style or artistic work; painting or image; still/frozen frame; overall grayish appearance; worst quality; low quality; JPEG artifacts; ugly; incomplete or damaged; extra fingers; poorly drawn hands; poorly drawn face; deformed; disfigured; malformed limbs; fused fingers; motionless/still image; messy/cluttered background; three legs; many people in the background; walking backwards. do not animate the background",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "644:677": {
+    "inputs": {
+      "noise_seed": 44
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "644:678": {
+    "inputs": {
+      "length": [
+        "608",
+        0
+      ],
+      "motion_latent_count": 1,
+      "positive": [
+        "644:675",
+        0
+      ],
+      "negative": [
+        "644:676",
+        0
+      ],
+      "anchor_samples": [
+        "295",
+        0
+      ],
+      "prev_samples": [
+        "336:327",
+        0
+      ]
+    },
+    "class_type": "WanImageToVideoSVIPro",
+    "_meta": {
+      "title": "WanImageToVideoSVIPro"
+    }
+  },
+  "644:679": {
+    "inputs": {
+      "noise": [
+        "644:677",
+        0
+      ],
+      "guider": [
+        "644:674",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        0
+      ],
+      "latent_image": [
+        "644:678",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "644:680": {
+    "inputs": {},
+    "class_type": "DisableNoise",
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "644:681": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "671",
+        0
+      ],
+      "positive": [
+        "644:678",
+        0
+      ],
+      "negative": [
+        "644:678",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "644:682": {
+    "inputs": {
+      "noise": [
+        "644:680",
+        0
+      ],
+      "guider": [
+        "644:681",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        1
+      ],
+      "latent_image": [
+        "644:679",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "644:683": {
+    "inputs": {
+      "overlap": 5,
+      "overlap_side": "source",
+      "overlap_mode": "linear_blend",
+      "source_images": [
+        "336:329",
+        2
+      ],
+      "new_images": [
+        "644:684",
+        0
+      ]
+    },
+    "class_type": "ImageBatchExtendWithOverlap",
+    "_meta": {
+      "title": "Image Batch Extend With Overlap"
+    }
+  },
+  "644:684": {
+    "inputs": {
+      "samples": [
+        "644:682",
+        0
+      ],
+      "vae": [
+        "673",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "655:685": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "670",
+        0
+      ],
+      "positive": [
+        "655:689",
+        0
+      ],
+      "negative": [
+        "655:689",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "655:686": {
+    "inputs": {
+      "text": "Dark clouds turn fiery red very quickly, and the sky is enveloped in flames. The clouds are burning. The fire is spreading rapidly all over",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "655:687": {
+    "inputs": {
+      "text": "Bright, oversaturated tones; overexposed; static; unclear or blurry details; subtitles; style or artistic work; painting or image; still/frozen frame; overall grayish appearance; worst quality; low quality; JPEG artifacts; ugly; incomplete or damaged; extra fingers; poorly drawn hands; poorly drawn face; deformed; disfigured; malformed limbs; fused fingers; motionless/still image; messy/cluttered background; three legs; many people in the background; walking backwards. do not animate the background",
+      "clip": [
+        "672",
+        0
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "CLIP Text Encode (Prompt)"
+    }
+  },
+  "655:688": {
+    "inputs": {
+      "noise_seed": 45
+    },
+    "class_type": "RandomNoise",
+    "_meta": {
+      "title": "RandomNoise"
+    }
+  },
+  "655:689": {
+    "inputs": {
+      "length": [
+        "608",
+        0
+      ],
+      "motion_latent_count": 1,
+      "positive": [
+        "655:686",
+        0
+      ],
+      "negative": [
+        "655:687",
+        0
+      ],
+      "anchor_samples": [
+        "295",
+        0
+      ],
+      "prev_samples": [
+        "644:682",
+        0
+      ]
+    },
+    "class_type": "WanImageToVideoSVIPro",
+    "_meta": {
+      "title": "WanImageToVideoSVIPro"
+    }
+  },
+  "655:690": {
+    "inputs": {
+      "noise": [
+        "655:688",
+        0
+      ],
+      "guider": [
+        "655:685",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        0
+      ],
+      "latent_image": [
+        "655:689",
+        2
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "655:691": {
+    "inputs": {},
+    "class_type": "DisableNoise",
+    "_meta": {
+      "title": "DisableNoise"
+    }
+  },
+  "655:692": {
+    "inputs": {
+      "cfg": 1,
+      "start_percent": 0,
+      "end_percent": 1,
+      "model": [
+        "671",
+        0
+      ],
+      "positive": [
+        "655:689",
+        0
+      ],
+      "negative": [
+        "655:689",
+        1
+      ]
+    },
+    "class_type": "ScheduledCFGGuidance",
+    "_meta": {
+      "title": "Scheduled CFG Guidance"
+    }
+  },
+  "655:693": {
+    "inputs": {
+      "noise": [
+        "655:691",
+        0
+      ],
+      "guider": [
+        "655:692",
+        0
+      ],
+      "sampler": [
+        "623:299",
+        0
+      ],
+      "sigmas": [
+        "623:128",
+        1
+      ],
+      "latent_image": [
+        "655:690",
+        0
+      ]
+    },
+    "class_type": "SamplerCustomAdvanced",
+    "_meta": {
+      "title": "SamplerCustomAdvanced"
+    }
+  },
+  "655:694": {
+    "inputs": {
+      "overlap": 5,
+      "overlap_side": "source",
+      "overlap_mode": "linear_blend",
+      "source_images": [
+        "644:683",
+        2
+      ],
+      "new_images": [
+        "655:695",
+        0
+      ]
+    },
+    "class_type": "ImageBatchExtendWithOverlap",
+    "_meta": {
+      "title": "Image Batch Extend With Overlap"
+    }
+  },
+  "655:695": {
+    "inputs": {
+      "samples": [
+        "655:693",
+        0
+      ],
+      "vae": [
+        "673",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  }
+}
