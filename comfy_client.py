@@ -16,9 +16,6 @@ def submit_job(workflow: dict) -> str:
     """Отправляет граф в ComfyUI. Возвращает prompt_id — идентификатор задачи в очереди."""
     resp = requests.post(f"{COMFY_HOST}/prompt", json={"prompt": workflow})
     if not resp.ok:
-        # ComfyUI обычно возвращает подробное описание проблемы (какой узел, какое
-        # поле, какое значение не подошло) прямо в теле ответа — requests.raise_for_status()
-        # это тело выбрасывает и оставляет только код статуса, что бесполезно для отладки.
         try:
             details = resp.json()
         except ValueError:
@@ -41,7 +38,7 @@ def wait_for_result(prompt_id: str, poll_interval: float = 3.0, timeout: float =
 
 
 def extract_video_info(outputs: dict, save_video_node_id: str) -> dict:
-    """Достаёт filename/subfolder/type готового видео из outputs — без построения URL."""
+    """Достаёт filename/subfolder/type готового видео из outputs - без построения URL."""
     video_info = outputs[save_video_node_id]["images"][0]
     return {
         "filename": video_info["filename"],
@@ -54,7 +51,7 @@ def fetch_video(filename: str, subfolder: str = "", type_: str = "output"):
     """
     Стримит видео с ComfyUI (requests-ответ с stream=True — вызывающий код сам
     итерируется по .iter_content()). Используется в app.py, чтобы браузер
-    забирал видео у НАШЕГО сервиса, а не напрямую у ComfyUI (см. комментарий
+    забирал видео у сервиса, а не напрямую у ComfyUI (см. комментарий
     в app.py про SSH-туннели и Cloudflare Tunnel).
     """
     resp = requests.get(
