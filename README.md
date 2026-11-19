@@ -99,5 +99,3 @@ cloudflared tunnel create video-service
 cloudflared tunnel route dns video-service ваш-поддомен.com
 sudo cloudflared service install
 ```
-
-Для постоянной работы без открытой SSH-сессии - обернуть ComfyUI и `app.py` в systemd-юниты (`comfyui.service`, `ltx-app.service`, `Restart=always`).
