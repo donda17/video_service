@@ -4,12 +4,12 @@
 
 ## Структура
 
-- `comfy_client.py` — общая часть: отправка задач в ComfyUI, ожидание результата, загрузка картинок.
-- `ltx_service.py` — адаптер под LTX 2.3 Director (список сцен → таймлайн).
-- `minimax_service.py` — адаптер под MiniMax H3 (один промпт, 4–15 сек).
-- `app.py` — FastAPI-сервер: очередь на одну GPU, эндпоинты `/generate`, `/generate-minimax`, `/upload-image`, `/status/{job_id}`.
-- `index.html` — фронтенд (открывается сервером на `/`).
-- `LTX_API.json`, `Minimax_h3_t2v_i2v_api.json` — экспортированные и починенные API-воркфлоу ComfyUI.
+- `comfy_client.py` - общая часть: отправка задач в ComfyUI, ожидание результата, загрузка картинок.
+- `ltx_service.py` - адаптер под LTX 2.3 Director (список сцен → таймлайн).
+- `minimax_service.py` - адаптер под MiniMax H3 (один промпт, 4–15 сек).
+- `app.py` - FastAPI-сервер: очередь на одну GPU, эндпоинты `/generate`, `/generate-minimax`, `/upload-image`, `/status/{job_id}`.
+- `index.html` - фронтенд (открывается сервером на `/`).
+- `LTX_API.json`, `Minimax_h3_t2v_i2v_api.json` - экспортированные и починенные API-воркфлоу ComfyUI.
 
 ## Установка на сервере (Linux)
 
@@ -20,7 +20,7 @@ cd <папка-репозитория>
 python3 -m venv venv
 source venv/bin/activate
 
-# PyTorch — под вашу версию CUDA (проверить: nvidia-smi)
+# PyTorch - под вашу версию CUDA (проверить: nvidia-smi)
 pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu130
 
 pip install -r requirements.txt
@@ -28,7 +28,7 @@ pip install -r requirements.txt
 
 ### ComfyUI и модели
 
-ComfyUI ставится отдельно (не в этом репозитории — там гигабайтные веса):
+ComfyUI ставится отдельно (не в этом репозитории - там гигабайтные веса):
 
 ```bash
 git clone https://github.com/comfyanonymous/ComfyUI.git ~/ComfyUI
@@ -59,7 +59,7 @@ git clone https://github.com/WhatDreamsCost/WhatDreamsCost-ComfyUI.git
 
 Источники: https://github.com/wildminder/awesome-ltx2, https://huggingface.co/Kijai/LTX2.3_comfy, https://huggingface.co/QuantStack/LTX-2.3-GGUF, https://huggingface.co/unsloth/gemma-3-12b-it-qat-GGUF
 
-**Модели под MiniMax H3** (проще — через сам ComfyUI: Workflow → Browse Templates → Video → MiniMax H3, скачивание встроено; либо см. `Comfy-Org/MiniMax-H3` на HuggingFace вручную).
+**Модели под MiniMax H3** (проще через сам ComfyUI: Workflow → Browse Templates → Video → MiniMax H3, скачивание встроено; либо см. `Comfy-Org/MiniMax-H3` на HuggingFace вручную).
 
 ### Запуск ComfyUI
 
@@ -79,18 +79,18 @@ python -m uvicorn app:app --host 127.0.0.1 --port 8000
 
 Откройте `http://<адрес-машины>:8000` (или через SSH-туннель `ssh -L 8000:127.0.0.1:8000 ...`).
 
-Если задавали `LTX_API_KEY` — впишите тот же ключ в `index.html`, в константу `API_KEY` в начале `<script>`.
+Если задавали `LTX_API_KEY` - впишите тот же ключ в `index.html`, в константу `API_KEY` в начале `<script>`.
 
-## Ограничения (сознательно заложены в код)
+## Ограничения
 
 - LTX Director: до 60 сек суммарно, до 12 сцен за раз (`app.py`, `MAX_TOTAL_DURATION_SEC` / `MAX_SCENES`).
-- MiniMax H3: 4–15 сек на генерацию — жёсткий лимит самой модели.
-- Очередь: одна GPU — задачи выполняются строго последовательно, независимо от того, какую модель выбрал пользователь.
+- MiniMax H3: 4–15 сек на генерацию - жёсткий лимит самой модели.
+- Очередь: одна GPU - задачи выполняются строго последовательно, независимо от того, какую модель выбрал пользователь.
 
-## Публикация наружу (кратко)
+## Публикация наружу
 
-Порты ComfyUI (8188) и сервиса (8000) слушают только `127.0.0.1` — наружу ничего не торчит напрямую.
-Для доступа снаружи — Cloudflare Tunnel (не требует проброса портов на роутере):
+Порты ComfyUI (8188) и сервиса (8000) слушают только `127.0.0.1` - наружу ничего не торчит напрямую.
+Для доступа снаружи - Cloudflare Tunnel:
 
 ```bash
 cloudflared tunnel login
@@ -100,4 +100,4 @@ cloudflared tunnel route dns video-service ваш-поддомен.com
 sudo cloudflared service install
 ```
 
-Для постоянной работы без открытой SSH-сессии — обернуть ComfyUI и `app.py` в systemd-юниты (`comfyui.service`, `ltx-app.service`, `Restart=always`).
+Для постоянной работы без открытой SSH-сессии - обернуть ComfyUI и `app.py` в systemd-юниты (`comfyui.service`, `ltx-app.service`, `Restart=always`).
