@@ -28,8 +28,8 @@ import minimax_service
 
 # --- Настройки ---
 
-MAX_TOTAL_DURATION_SEC = 60   # лимит для LTX ("до минуты" из требований к сервису)
-MAX_SCENES = 12               # разумный потолок, чтобы не собирать гигантский граф
+MAX_TOTAL_DURATION_SEC = 60   # лимит для LTX (до минуты)
+MAX_SCENES = 12               # потолок, чтобы не собирать гигантский граф
 
 API_KEY = os.environ.get("LTX_API_KEY")
 
@@ -39,7 +39,6 @@ def check_api_key(x_api_key: str | None = Header(default=None)):
         raise HTTPException(401, "Неверный или отсутствующий API-ключ")
 
 
-# Шаблоны воркфлоу читаем один раз при старте, а не при каждом запросе.
 with open(ltx_service.WORKFLOW_PATH, "r", encoding="utf-8") as f:
     LTX_TEMPLATE = json.load(f)
 
@@ -59,7 +58,7 @@ class SceneIn(BaseModel):
 class LtxGenerateRequest(BaseModel):
     scenes: list[SceneIn]
     global_prompt: str = ""
-    aspect_ratio: str | None = None   # None = авто (как раньше, проверенное поведение)
+    aspect_ratio: str | None = None   # None = авто 
     megapixels: float | None = None   # оба должны быть заданы вместе, иначе игнорируются
 
 
@@ -132,26 +131,12 @@ def upload_image_endpoint(file: UploadFile = File(...)):
 
 
 def video_proxy_url(info: dict) -> str:
-    """
-    Собирает ссылку на НАШ эндпоинт /video (см. ниже), а не на ComfyUI напрямую.
-    Важно: браузер пользователя открывает интерфейс через SSH-туннель/Cloudflare Tunnel,
-    где ему в принципе доступен только порт сервиса (8000), а не порт ComfyUI (8188).
-    Прямая ссылка на 127.0.0.1:8188 работала бы только если сам ComfyUI тоже
-    протуннелирован — и всё равно сломалась бы при публикации через Cloudflare Tunnel,
-    где наружу торчит только один порт.
-    """
     query = urllib.parse.urlencode(info)
     return f"/video?{query}"
 
 
 @app.get("/video")
 def get_video(filename: str, subfolder: str = "", type: str = "output"):
-    """
-    Проксирует видео от ComfyUI к браузеру. Специально БЕЗ проверки API-ключа —
-    тег <video src="..."> в браузере не умеет прикладывать кастомные заголовки,
-    поэтому защита через X-API-Key тут технически невозможна (см. раздел про
-    ограничения API-ключа в документации сервиса).
-    """
     try:
         upstream = comfy_client.fetch_video(filename, subfolder, type)
     except Exception as e:
@@ -248,12 +233,6 @@ def get_status(job_id: str):
 
 @app.get("/metrics")
 def get_metrics():
-    """
-    Сводка по всем задачам с момента запуска сервиса — для сбора метрик в отчёт
-    (раздел 13: время генерации, доля неудачных). Не требует API-ключа сознательно,
-    чтобы удобно смотреть в браузере при отладке; при желании защитить так же,
-    как /generate — добавить dependencies=[Depends(check_api_key)].
-    """
     summary = {"total": len(jobs), "by_status": {}, "by_model": {}}
     for job in jobs.values():
         summary["by_status"][job["status"]] = summary["by_status"].get(job["status"], 0) + 1
