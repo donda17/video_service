@@ -16,12 +16,12 @@ from comfy_client import COMFY_HOST, submit_job, wait_for_result, upload_image, 
 WORKFLOW_PATH = "Minimax_h3_t2v_i2v_api.json"
 MAX_DURATION_SEC = 15   # жёсткий потолок самой модели, не наш лимит
 MIN_DURATION_SEC = 1    # снижено по запросу; формула узла 132 сама не даёт уйти ниже ~5 кадров,
-                         # так что и 1 сек технически безопасен — просто вне официально
+                         # так что и 1 сек технически безопасен - просто вне официально
                          # заявленного тренировочного диапазона (4-15 сек), результат может быть
                          # менее предсказуем, чем внутри этого диапазона
 
 # Точный список допустимых значений узла ResolutionSelector (встроенный узел ComfyUI,
-# см. docs.comfy.org/built-in-nodes/ResolutionSelector) — ComfyUI строго валидирует
+# см. docs.comfy.org/built-in-nodes/ResolutionSelector) - ComfyUI строго валидирует
 # combo-поля и отклоняет всё, чего нет в этом списке буква в букву.
 MINIMAX_ASPECT_RATIOS = [
     "1:1 (Square)",
@@ -35,8 +35,8 @@ MINIMAX_ASPECT_RATIOS = [
 ]
 # Официальный локальный релиз (H3-Base) заявлен как "768p-class": короткая сторона
 # ограничена ~768px (до 768x1344), полный 2K-пайплайн (Regenerate-2K) в открытых
-# весах пока не выпущен. Поэтому потолок megapixels держим консервативным —
-# 768x1344 ≈ 1.03 MP — а не тот широкий диапазон (0.1-16.0), что формально
+# весах пока не выпущен. Поэтому потолок megapixels держим консервативным -
+# 768x1344 ≈ 1.03 MP - а не тот широкий диапазон (0.1-16.0), что формально
 # разрешает сам узел ResolutionSelector.
 MINIMAX_MIN_MEGAPIXELS = 0.1
 MINIMAX_MAX_MEGAPIXELS = 1.05
